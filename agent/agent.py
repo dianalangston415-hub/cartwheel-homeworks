@@ -427,6 +427,22 @@ def find_order(
     return _call(wrapper, hw_tools.find_order, query)
 
 
+@function_tool
+def get_order_details(
+    wrapper: RunContextWrapper[AuthContext], order_id: int
+) -> dict[str, Any]:
+    """Look up one order with its product name and return deadline.
+
+    Returns the order record plus the product title, the return window that
+    applies (store override or platform default), the policy id to cite for
+    that window, the return deadline, days left, and days past the deadline.
+    Use it for return, refund, or deadline questions about a specific order.
+    If data_issues is non-empty, the record is inconsistent: say so and
+    escalate rather than stating a deadline.
+    """
+    return _call(wrapper, hw_tools.get_order_details, order_id)
+
+
 # Progressive disclosure: a session exposes only the tools its role can use.
 # Fewer tools mean fewer wrong choices and cleaner evals. At dev scale the
 # only difference is that support staff, who have no orders of their own,
@@ -436,6 +452,7 @@ _COMMON_TOOLS = [
     get_policy,
     search_products,
     get_order,
+    get_order_details,
     issue_refund,
     cancel_order,
     escalate_to_human,
